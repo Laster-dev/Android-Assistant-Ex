@@ -1,0 +1,288 @@
+﻿<Window x:Class="搞机助手Ex.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:搞机助手Ex"
+        mc:Ignorable="d"
+        Title="MainWindow" Focusable="False"
+        ResizeMode="NoResize" 
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        TextOptions.TextHintingMode="Fixed"
+        UseLayoutRounding="True"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" Width="761.6" Height="474">
+    <Window.Resources>
+        <!-- 动画资源 -->
+        <Storyboard x:Key="MinimizeStoryboard">
+            <DoubleAnimation Storyboard.TargetName="MainGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" From="1" To="0" Duration="0:0:0.15"/>
+            <DoubleAnimation Storyboard.TargetName="MainGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" From="1" To="0" Duration="0:0:1.0"/>
+            <DoubleAnimation Storyboard.TargetName="AllBorder" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.2"/>
+        </Storyboard>
+        <Storyboard x:Key="RestartStoryboard">
+            <DoubleAnimation Storyboard.TargetName="MainGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" From="0" To="1" Duration="0:0:0.2"/>
+            <DoubleAnimation Storyboard.TargetName="MainGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" From="0" To="1" Duration="0:0:0.2"/>
+            <DoubleAnimation Storyboard.TargetName="AllBorder" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.2"/>
+        </Storyboard>
+    </Window.Resources>
+
+    <Border x:Name="AllBorder" CornerRadius="8" MouseDown="TitleBar_MouseDown" Background="{DynamicResource WindowBackground}" ClipToBounds="True" BorderBrush="#1E444444" BorderThickness="2">
+        <Grid x:Name="MainGrid" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <ScaleTransform/>
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="31"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- 标题栏 -->
+            <Grid Height="31"  Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Canvas Width="20" Height="20" Margin="5" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                        <!-- Background Circle -->
+                        <Ellipse Canvas.Left="0.8" Canvas.Top="0.8" Width="18.4" Height="18.4" Fill="#2196F3" />
+
+                        <!-- Central Smartphone -->
+                        <Rectangle Canvas.Left="7.5" Canvas.Top="5.4" Width="5" Height="9.2" Fill="White">
+                            <Rectangle.RadiusX>0.7</Rectangle.RadiusX>
+                            <Rectangle.RadiusY>0.7</Rectangle.RadiusY>
+                        </Rectangle>
+
+                        <!-- Phone Screen -->
+                        <Rectangle Canvas.Left="7.9" Canvas.Top="6.2" Width="4.2" Height="6.7" Fill="#E8F5FE">
+                            <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                            <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                        </Rectangle>
+
+                        <!-- Home Button -->
+                        <Ellipse Canvas.Left="9.5" Canvas.Top="13.3" Width="1" Height="1" Fill="#E8F5FE" />
+
+                        <!-- Minimal Abstract App Icons -->
+                        <Rectangle Canvas.Left="8.7" Canvas.Top="7.1" Width="0.8" Height="0.8" Fill="#2196F3">
+                            <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                            <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                        </Rectangle>
+                        <Rectangle Canvas.Left="10.4" Canvas.Top="7.1" Width="0.8" Height="0.8" Fill="#2196F3">
+                            <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                            <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                        </Rectangle>
+                        <Rectangle Canvas.Left="8.7" Canvas.Top="8.8" Width="0.8" Height="0.8" Fill="#2196F3">
+                            <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                            <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                        </Rectangle>
+                        <Rectangle Canvas.Left="10.4" Canvas.Top="8.8" Width="0.8" Height="0.8" Fill="#2196F3">
+                            <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                            <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                        </Rectangle>
+
+                        <!-- Gear Circle -->
+                        <Ellipse Canvas.Left="2.1" Canvas.Top="2.1" Width="15.8" Height="15.8" 
+Stroke="White" StrokeThickness="0.4" Fill="Transparent">
+                            <Ellipse.StrokeDashArray>
+                                <DoubleCollection>1,0.7</DoubleCollection>
+                            </Ellipse.StrokeDashArray>
+                        </Ellipse>
+
+                        <!-- Wrench (Simplified) -->
+                        <Path Fill="White" Data="M15,7.1 Q14.6,6.2 13.8,6.7 L12.1,8.3 L12.9,9.2 L14.6,7.5 Q15,6.7 15,7.1 Z" />
+
+                        <!-- Small Gear Element -->
+                        <Canvas>
+                            <Canvas.RenderTransform>
+                                <TranslateTransform X="5" Y="7.5" />
+                            </Canvas.RenderTransform>
+                            <Ellipse Canvas.Left="-1.25" Canvas.Top="-1.25" Width="2.5" Height="2.5" Fill="White" />
+                            <Ellipse Canvas.Left="-0.5" Canvas.Top="-0.5" Width="1" Height="1" Fill="#2196F3" />
+
+                            <!-- Gear Teeth (Simplified) -->
+                            <Rectangle Canvas.Left="-0.2" Canvas.Top="-1.7" Width="0.4" Height="0.6" Fill="White">
+                                <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                                <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                            </Rectangle>
+                            <Rectangle Canvas.Left="-1.7" Canvas.Top="-0.2" Width="0.6" Height="0.4" Fill="White">
+                                <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                                <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                            </Rectangle>
+                            <Rectangle Canvas.Left="-0.2" Canvas.Top="1.1" Width="0.4" Height="0.6" Fill="White">
+                                <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                                <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                            </Rectangle>
+                            <Rectangle Canvas.Left="1.1" Canvas.Top="-0.2" Width="0.6" Height="0.4" Fill="White">
+                                <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                                <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                            </Rectangle>
+
+                            <!-- Simplified Rotated Teeth -->
+                            <Canvas>
+                                <Canvas.RenderTransform>
+                                    <RotateTransform Angle="45" />
+                                </Canvas.RenderTransform>
+                                <Rectangle Canvas.Left="-0.2" Canvas.Top="-1.7" Width="0.4" Height="0.6" Fill="White">
+                                    <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                                    <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                                </Rectangle>
+                                <Rectangle Canvas.Left="-1.7" Canvas.Top="-0.2" Width="0.6" Height="0.4" Fill="White">
+                                    <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                                    <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                                </Rectangle>
+                                <Rectangle Canvas.Left="-0.2" Canvas.Top="1.1" Width="0.4" Height="0.6" Fill="White">
+                                    <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                                    <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                                </Rectangle>
+                                <Rectangle Canvas.Left="1.1" Canvas.Top="-0.2" Width="0.6" Height="0.4" Fill="White">
+                                    <Rectangle.RadiusX>0.2</Rectangle.RadiusX>
+                                    <Rectangle.RadiusY>0.2</Rectangle.RadiusY>
+                                </Rectangle>
+                            </Canvas>
+                        </Canvas>
+                    </Canvas>
+
+                    <TextBlock x:Name="textblock_title" Grid.Column="1" Text="搞机助手Ex" Foreground="{DynamicResource PrimaryForeground}" VerticalAlignment="Center" Margin="5,0,0,0" FontSize="14" HorizontalAlignment="Left"/>
+
+                </StackPanel>
+             <Button Grid.Column="2"
+        Width="25" Height="25" Margin="0,0,3,0"
+        Click="Themes_Click"
+        Background="{DynamicResource SecondaryBackground}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        Style="{DynamicResource ControlButtonStyle}">
+                    <Canvas Width="20" Height="20">
+                        <!-- 调色板图形：主体 -->
+                        <Path Fill="{DynamicResource PrimaryForeground}"
+              Data="M10,1 A9,9 0 1,1 1,10 C1,14 6,14 6,10 A4,4 0 1,0 10,1 Z"/>
+                        <!-- 色块孔位：简化表现，模拟多色调 -->
+                        <Ellipse Width="2.2" Height="2.2" Canvas.Left="6" Canvas.Top="5" Fill="{DynamicResource HighlightBrush}"/>
+                        <Ellipse Width="2.2" Height="2.2" Canvas.Left="12" Canvas.Top="5" Fill="{DynamicResource SuccessBrush}"/>
+                        <Ellipse Width="2.2" Height="2.2" Canvas.Left="13" Canvas.Top="10" Fill="{DynamicResource InfoBrush}"/>
+                        <Ellipse Width="2.2" Height="2.2" Canvas.Left="9" Canvas.Top="13" Fill="{DynamicResource WarningBrush}"/>
+                    </Canvas>
+                </Button>
+
+                <Button Grid.Column="3" Width="25" Height="25" Margin="0,0,3,0" Click="MinimizeButton_Click" Background="#FFD700" Tag="#FFEC8B" BorderBrush="#DAA520" Style="{DynamicResource ControlButtonStyle}">
+                    <Canvas>
+                        <Line X1="6" Y1="10" X2="14" Y2="10" Stroke="Black" StrokeThickness="2"/>
+                    </Canvas>
+                </Button>
+                <Button Grid.Column="4" Width="25" Height="25" Margin="0,0,3,0" Click="Button_Click" Background="#E57373" Tag="#EF9A9A" BorderBrush="#D32F2F" Style="{DynamicResource ControlButtonStyle}">
+                    <Canvas>
+                        <Line X1="6" Y1="6" X2="14" Y2="14" Stroke="Black" StrokeThickness="2"/>
+                        <Line X1="14" Y1="6" X2="6" Y2="14" Stroke="Black" StrokeThickness="2"/>
+                    </Canvas>
+                </Button>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- 现代化侧边菜单面板 -->
+                <StackPanel Margin="0,10,0,0" Cursor="Hand">
+             
+                    <!-- 菜单项 -->
+                    <RadioButton 
+                x:Name="btnDeviceInfo" 
+                Style="{DynamicResource ModernMenuButtonStyle}"
+                GroupName="MenuGroup"
+                IsChecked="True">
+                        <StackPanel Orientation="Horizontal">
+                            <Path 
+                                Data="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"
+                                Fill="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}"
+                                Width="18" Height="18"
+                                Stretch="Uniform"/>
+                            <TextBlock Text="设备信息" Margin="12,0,0,0" FontWeight="Bold"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton 
+    x:Name="btnSystemMode" 
+    Style="{StaticResource ModernMenuButtonStyle}"
+    GroupName="MenuGroup">
+                        <StackPanel Orientation="Horizontal">
+                            <Path 
+            Data="M141.1 331.2c-35 0-63.3 28.3-63.3 63.2v264.7c0 34.9 28.4 63.2 63.3 63.2 35 0 63.3-28.3 63.3-63.2V394.4c0-34.9-28.3-63.2-63.3-63.2zM228.9 753.3c0 37.3 30.3 67.5 67.6 67.5h46.1v140c0 34.9 28.4 63.2 63.3 63.2 35 0 63.3-28.3 63.3-63.2v-140h85.5v140c0 34.9 28.4 63.2 63.3 63.2 35 0 63.3-28.3 63.3-63.2v-140h46.1c37.3 0 67.6-30.2 67.6-67.5V343.1H228.9v410.2zM651.8 93.4L696 13c2.4-4.2 0.8-9.6-3.5-11.9-4.2-2.3-9.6-0.8-11.9 3.5l-44.7 81.2C598.4 69.2 556.4 59.9 512 59.9c-44.4 0-86.4 9.3-123.9 25.8L343.4 4.6c-2.3-4.3-7.7-5.8-11.9-3.5-4.3 2.3-5.9 7.7-3.5 11.9l44.2 80.4c-86.8 44.8-145.5 130-145.5 227.7h570.5c0.1-97.8-58.6-182.9-145.4-227.7zM382.2 218c-13.2 0-23.9-10.7-23.9-23.9s10.7-23.9 23.9-23.9 23.9 10.7 23.9 23.9c-0.1 13.2-10.8 23.9-23.9 23.9z m259.7 0c-13.2 0-23.9-10.7-23.9-23.9s10.7-23.9 23.9-23.9 23.9 10.7 23.9 23.9c-0.1 13.2-10.8 23.9-23.9 23.9zM882.9 331.2c-35 0-63.3 28.3-63.3 63.2v264.7c0 34.9 28.4 63.2 63.3 63.2 35 0 63.3-28.3 63.3-63.2V394.4c0-34.9-28.3-63.2-63.3-63.2z"
+            Fill="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}"
+            Width="18" Height="18"
+            Stretch="Uniform"/>
+                            <TextBlock Text="系统模式" Margin="12,0,0,0" FontWeight="Bold"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton 
+                x:Name="btnRecoveryMode" 
+                Style="{DynamicResource ModernMenuButtonStyle}"
+                GroupName="MenuGroup">
+                        <StackPanel Orientation="Horizontal">
+                            <Path 
+                        Data="M17.65,6.35C16.2,4.9 14.21,4 12,4C7.58,4 4,7.58 4,12C4,16.42 7.58,20 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18C8.69,18 6,15.31 6,12C6,8.69 8.69,6 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"
+                        Fill="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}"
+                        Width="18" Height="18"
+                        Stretch="Uniform"/>
+                            <TextBlock Text="恢复模式" Margin="12,0,0,0" FontWeight="Bold"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton 
+                x:Name="btnBootMode" 
+                Style="{DynamicResource ModernMenuButtonStyle}"
+                GroupName="MenuGroup">
+                        <StackPanel Orientation="Horizontal">
+                            <Path 
+                        Data="M19.8,10.7L4.2,5L3.5,6.9L17.6,12L3.5,17.1L4.2,19L19.8,13.3C20.5,13,20.5,11,19.8,10.7Z"
+                        Fill="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}"
+                        Width="18" Height="18"
+                        Stretch="Uniform"/>
+                            <TextBlock Text="引导模式" Margin="12,0,0,0" FontWeight="Bold"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton 
+                x:Name="btnExtendedFunc" 
+                Style="{DynamicResource ModernMenuButtonStyle}"
+                GroupName="MenuGroup">
+                        <StackPanel Orientation="Horizontal">
+                            <Path 
+                        Data="M19,3H5C3.9,3,3,3.9,3,5V19C3,20.1,3.9,21,5,21H19C20.1,21,21,20.1,21,19V5C21,3.9,20.1,3,19,3M10,10.5H7.5V13H10V15.5H7.5V18H5V6H10V10.5M19,18H14.5V13H19V18Z"
+                        Fill="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}"
+                        Width="18" Height="18"
+                        Stretch="Uniform"/>
+                            <TextBlock Text="拓展功能" Margin="12,0,0,0" FontWeight="Bold"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton 
+    x:Name="btnAboutSoftware" 
+    Style="{StaticResource ModernMenuButtonStyle}"
+    GroupName="MenuGroup">
+                        <StackPanel Orientation="Horizontal">
+                            <Path 
+            Data="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372zm32-588c0-17.7-14.3-32-32-32s-32 14.3-32 32v248c0 17.7 14.3 32 32 32s32-14.3 32-32V296zm-32 392c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40z"
+            Fill="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}"
+            Width="18" Height="18"
+            Stretch="Uniform"/>
+                            <TextBlock Text="关于软件" Margin="12,0,0,0" FontWeight="Bold"/>
+                        </StackPanel>
+                    </RadioButton>
+                </StackPanel>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                </Grid>
+                <!-- 内容区域 -->
+                <Grid Grid.Column="1" x:Name="MainFram" Width="600"/>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
