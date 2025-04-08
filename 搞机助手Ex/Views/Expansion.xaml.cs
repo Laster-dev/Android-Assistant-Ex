@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using 搞机助手Ex.MyControl;
 
 namespace 搞机助手Ex.Views
 {

@@ -1,14 +1,38 @@
-﻿<Page x:Class="搞机助手Ex.Views.Expansion"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:搞机助手Ex.Views"
-      mc:Ignorable="d" 
-      Width="600" Height="411.2"
-      Title="Expansion">
+﻿<Page x:Class="搞机助手Ex.Views.Expansion"  
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
+     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"   
+     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"   
+     xmlns:local="clr-namespace:搞机助手Ex.Views"  
+     xmlns:exControls="clr-namespace:搞机助手Ex.MyControl"  
+     mc:Ignorable="d"   
+     Width="600" Height="411.2"  
+     Title="Expansion">  
 
-    <Grid>
-        <TextBlock Text="ghjtgyj"/>
-    </Grid>
+   <Grid>  
+       <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">  
+           <!-- 使用命名空间前缀引用控件 -->
+            <exControls:HorizontalBatteryControl x:Name="Battery" 
+                                    Width="100" 
+                                    Height="30"
+                                    Capacity="85" 
+                                    Margin="0,0,0,20"/>
+
+            <!-- 可选：添加一个滑块来控制电量 -->  
+           <StackPanel Orientation="Horizontal" Margin="0,10,0,0">  
+               <TextBlock Text="电池电量: " VerticalAlignment="Center"/>  
+               <Slider x:Name="CapacitySlider"   
+                       Width="150"   
+                       Minimum="0"   
+                       Maximum="100"   
+                       Value="{Binding Capacity, ElementName=Battery, Mode=TwoWay}"  
+                       TickFrequency="10"  
+                       TickPlacement="BottomRight"/>  
+               <TextBlock Text="{Binding Value, ElementName=CapacitySlider, StringFormat={}{0:0}%}"   
+                          Width="40"   
+                          Margin="5,0"   
+                          VerticalAlignment="Center"/>  
+           </StackPanel>  
+       </StackPanel>  
+   </Grid>  
 </Page>

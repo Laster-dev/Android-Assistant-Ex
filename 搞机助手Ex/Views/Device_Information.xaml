@@ -1,4 +1,4 @@
-﻿<Page x:Class="搞机助手Ex.Views.Device_Information"
+﻿<Page xmlns:MyControl="clr-namespace:搞机助手Ex.MyControl"  x:Class="搞机助手Ex.Views.Device_Information"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -39,28 +39,35 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel x:Name="StackPanel_System" Orientation="Horizontal">
                         <TextBlock Text="系统模式下重启到" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
                         <Button Content="系统模式" Click="Button_Click" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
                         <Button Content="Recovery" Click="Button_Click_1" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
                         <Button Content="FastBoot" Click="Button_Click_2" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
                         <Button Content="关机" Click="Button_Click_3" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Grid.Row="1">
+                    <StackPanel x:Name="StackPanel_Recovery" Orientation="Horizontal" Grid.Row="1">
                         <TextBlock Text="恢复模式下重启到" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
-                        <Button Content="系统模式" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
-                        <Button Content="Recovery" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
-                        <Button Content="FastBoot" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
-                        <Button Content="关机" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
+                        <Button Content="系统模式" Click="Button_Click" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
+                        <Button Content="Recovery" Click="Button_Click_1" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
+                        <Button Content="FastBoot" Click="Button_Click_2" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
+                        <Button Content="关机" Click="Button_Click_3" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Grid.Row="2">
+                    <StackPanel x:Name="StackPanel_Fastboot" Orientation="Horizontal" Grid.Row="2">
                         <TextBlock Text="引导模式下重启到" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
-                        <Button Content="系统模式" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
-                        <Button Content="Recovery" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
-                        <Button Content="FastBoot" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
-                        <Button Content="关机" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
+                        <Button Content="系统模式" Click="Button_Click_4" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
+                        <Button Content="Recovery" Click="Button_Click_5" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
+                        <Button Content="FastBoot" Click="Button_Click_6" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
+                        <Button Content="9008" Click="Button_Click_7" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
                     </StackPanel>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal">
+                        <MyControl:HorizontalBatteryControl x:Name="BatteryCtrl" Margin="10" Height="30" Width="100"/>
+                        <TextBlock VerticalAlignment="Center"
+                            Text="{Binding Path = Capacity, ElementName=BatteryCtrl, StringFormat=当前电池电量: {0:F0}%}"/>
+                    </StackPanel>
+
                 </Grid>
             </StackPanel>
             

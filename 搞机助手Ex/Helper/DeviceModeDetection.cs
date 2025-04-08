@@ -43,7 +43,8 @@ namespace 搞机助手Ex.Helper
                 // Skip the first line which is just "List of devices attached"
                 foreach (var line in outLines.Skip(1))
                 {
-                    var parts = line.Trim().Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                    // 使用更宽松的分隔符，因为不同ADB版本可能使用空格或制表符
+                    var parts = line.Trim().Split(new[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     if (parts.Length >= 2)
                     {
                         devices.Add(new Device { Id = parts[0], State = parts[1] });
@@ -72,50 +73,53 @@ namespace 搞机助手Ex.Helper
                 return DeviceMode.NoDevice;
             }
 
-            // 设备通过ADB连接，现在确定它是处于正常模式还是恢复模式
+            // 设备通过ADB连接，直接通过设备状态确定模式
             var device = devices.FirstOrDefault();
             if (device != null)
             {
-                // 检查设备是否处于恢复模式
-                var recoveryResult = await ExecuteShellCommandAsync("getprop ro.bootmode", false, cancellationToken);
+                // 直接检查设备状态字符串
+                string state = device.State.ToLower().Trim();
 
-                if (recoveryResult.Success)
+                // 根据设备状态返回对应的模式
+                switch (state)
                 {
-                    string bootMode = recoveryResult.Output.Trim().ToLower();
-
-                    if (bootMode.Contains("recovery"))
-                    {
+                    case "recovery":
                         return DeviceMode.Recovery;
-                    }
 
-                    // 还检查另一个可能指示恢复的属性
-                    var altRecoveryResult = await ExecuteShellCommandAsync("getprop ro.boot.mode", false, cancellationToken);
-                    if (altRecoveryResult.Success && altRecoveryResult.Output.Trim().ToLower().Contains("recovery"))
-                    {
+                    case "device":
+                        return DeviceMode.System;
+
+                    case "sideload":
+                        // sideload通常也是Recovery模式的一种特殊状态
                         return DeviceMode.Recovery;
-                    }
 
-                    // 对TWRP和其他自定义恢复进行额外检查
-                    var twrpResult = await ExecuteShellCommandAsync("ls /", false, cancellationToken);
-                    if (twrpResult.Success && (
-                        twrpResult.Output.Contains("twres") ||
-                        twrpResult.Output.Contains("etc/twrp") ||
-                        twrpResult.Output.Contains("RECOVERY")))
-                    {
-                        return DeviceMode.Recovery;
-                    }
-
-                    return DeviceMode.System;
-                }
-                else
-                {
-                    // 如果我们无法执行shell命令但设备已连接，
-                    // 它可能处于恢复模式（某些恢复限制shell访问）
-                    return DeviceMode.Recovery;
+                    default:
+                        // 如果状态不明确，可以尝试之前的检测方法作为备用
+                        if (await IsInRecoveryModeAsync(cancellationToken))
+                        {
+                            return DeviceMode.Recovery;
+                        }
+                        return DeviceMode.Unknown;
                 }
             }
 
             return DeviceMode.Unknown;
+        }
+
+        /// <summary>
+        /// 使用多种方法检测设备是否处于Recovery模式
+        /// </summary>
+        private async Task<bool> IsInRecoveryModeAsync(CancellationToken cancellationToken = default)
+        {
+            // 检查方法3: 检查recovery特有进程
+            var processResult = await ExecuteShellCommandAsync("ps | grep -E 'recovery|twrp'", false, cancellationToken);
+            if (processResult.Success && !string.IsNullOrWhiteSpace(processResult.Output) &&
+                !processResult.Output.Contains("grep"))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -128,7 +132,7 @@ namespace 搞机助手Ex.Helper
             switch (mode)
             {
                 case DeviceMode.System:
-                    return "正常模式";
+                    return "系统模式";
                 case DeviceMode.Fastboot:
                     return "Fastboot模式";
                 case DeviceMode.Recovery:

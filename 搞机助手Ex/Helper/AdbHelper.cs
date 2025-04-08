@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace 搞机助手Ex.Helper
 {
@@ -20,14 +21,45 @@ namespace 搞机助手Ex.Helper
         // SemaphoreSlim for thread-safe command execution
         private readonly SemaphoreSlim _commandLock = new SemaphoreSlim(1, 1);
 
+        // ADB server process
+        private Process _adbServerProcess;
+        private bool _serverInitialized = false;
+
         public ADBClient()
         {
+            InitializeAdbServer();
         }
 
         public ADBClient(string adbPath)
         {
             if (File.Exists(adbPath))
                 AdbPath = adbPath;
+
+            InitializeAdbServer();
+        }
+
+        private void InitializeAdbServer()
+        {
+            if (_serverInitialized)
+                return;
+
+            // Start the ADB server once
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = AdbPath,
+                Arguments = "start-server",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
+
+            using (var process = Process.Start(startInfo))
+            {
+                process.WaitForExit();
+                _serverInitialized = process.ExitCode == 0;
+            }
         }
 
         #region Core Command Execution
@@ -41,13 +73,18 @@ namespace 搞机助手Ex.Helper
             {
                 await _commandLock.WaitAsync(cancellationToken);
 
-                string fullCommand = FormatAdbCommand(command);
+                // Ensure server is started
+                if (!_serverInitialized)
+                {
+                    InitializeAdbServer();
+                }
+
                 var result = new CommandResult();
 
                 var startInfo = new ProcessStartInfo
                 {
-                    FileName = "cmd.exe",
-                    Arguments = $"/C {fullCommand}",
+                    FileName = AdbPath,
+                    Arguments = command,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -115,10 +152,11 @@ namespace 搞机助手Ex.Helper
             return ExecuteCommandAsync(command).GetAwaiter().GetResult();
         }
 
-        private string FormatAdbCommand(string command)
-        {
-            return $"\"{AdbPath}\" {command}";
-        }
+        // This method is no longer needed as we're calling ADB directly
+        // private string FormatAdbCommand(string command)
+        // {
+        //    return $"\"{AdbPath}\" {command}";
+        // }
 
         #endregion
 
@@ -136,11 +174,13 @@ namespace 搞机助手Ex.Helper
 
         public async Task<CommandResult> StartServerAsync(CancellationToken cancellationToken = default)
         {
+            _serverInitialized = false;
             return await ExecuteCommandAsync("start-server", cancellationToken);
         }
 
         public async Task<CommandResult> KillServerAsync(CancellationToken cancellationToken = default)
         {
+            _serverInitialized = false;
             return await ExecuteCommandAsync("kill-server", cancellationToken);
         }
 
@@ -355,6 +395,13 @@ namespace 搞机助手Ex.Helper
         public void Dispose()
         {
             _commandLock?.Dispose();
+
+            // Ensure ADB server is properly terminated
+            try
+            {
+                ExecuteCommand("kill-server");
+            }
+            catch { }
         }
 
         #endregion

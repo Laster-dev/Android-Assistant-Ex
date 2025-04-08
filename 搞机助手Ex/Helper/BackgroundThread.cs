@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,7 +10,8 @@ namespace 搞机助手Ex.Helper
     public class BackgroundThread : IDisposable
     {
         private readonly TextBlock _textBlock;
-        public  ADBClient _adbClient;
+        public ADBClient _adbClient;
+        public FastbootClient _fastbootClient;
         private readonly CancellationTokenSource _cancellationTokenSource;
         private Timer _timer;
 
@@ -22,20 +20,18 @@ namespace 搞机助手Ex.Helper
         private bool _isCheckingDevices;
 
         // Default scan interval in milliseconds
-        private const int DefaultScanInterval = 5000;
+        private const int DefaultScanInterval = 2000;
 
         public BackgroundThread(TextBlock textBlock)
         {
             _textBlock = textBlock ?? throw new ArgumentNullException(nameof(textBlock));
             _adbClient = new ADBClient();
+            _fastbootClient = new FastbootClient();
             _cancellationTokenSource = new CancellationTokenSource();
-
-            //MessageBox.Show("后台线程已启动");
 
             // Start device monitoring
             StartMonitoring();
         }
-
         /// <summary>
         /// Starts the device monitoring process
         /// </summary>
@@ -103,22 +99,58 @@ namespace 搞机助手Ex.Helper
         {
             try
             {
-                // Get devices asynchronously
-                var devices = await _adbClient.GetDevicesAsync(cancellationToken);
+                // 使用DetectDeviceModeAsync来检测设备模式，这包括ADB和Fastboot
+                var deviceMode = await _adbClient.DetectDeviceModeAsync(cancellationToken);
+
+                // 根据检测到的设备模式，获取相应的设备详情
+                string deviceInfo = "No devices connected";
+
+                switch (deviceMode)
+                {
+                    case DeviceMode.System:
+                    case DeviceMode.Recovery:
+                        // 对于通过ADB连接的设备，获取设备ID
+                        var adbDevices = await _adbClient.GetDevicesAsync(cancellationToken);
+                        if (adbDevices.Count > 0)
+                        {
+                            var device = adbDevices[0];
+                            string modeString = await _adbClient.GetDeviceModeStringAsync(cancellationToken);
+                            deviceInfo = $"{device.Id} ({modeString})";
+                        }
+                        break;
+
+                    case DeviceMode.Fastboot:
+                        // 对于Fastboot模式的设备，获取FastBoot设备信息
+                        var fastbootDevices = await _fastbootClient.GetDevicesAsync(cancellationToken);
+                        if (fastbootDevices.Count > 0)
+                        {
+                            var device = fastbootDevices[0];
+                            deviceInfo = $"{device.SerialNumber} (Fastboot模式)";
+                        }
+                        else
+                        {
+                            deviceInfo = "未知Fastboot设备";
+                        }
+                        break;
+
+                    case DeviceMode.Download:
+                        deviceInfo = "设备处于下载模式(奥丁模式)";
+                        break;
+
+                    case DeviceMode.NoDevice:
+                        deviceInfo = "未连接设备";
+                        break;
+
+                    case DeviceMode.Unknown:
+                    default:
+                        deviceInfo = "未知设备状态";
+                        break;
+                }
 
                 // Update UI on the UI thread
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
-                    if (devices.Count > 0)
-                    {
-                        // Show the first device in the UI
-                        var device = devices[0];
-                        _textBlock.Text = $"搞机助手Ex    {device.Id} ({device.State})";
-                    }
-                    else
-                    {
-                        _textBlock.Text = "搞机助手Ex    No devices connected";
-                    }
+                    _textBlock.Text = $"搞机助手Ex    {deviceInfo}";
                 });
             }
             catch (OperationCanceledException)
@@ -159,6 +191,7 @@ namespace 搞机助手Ex.Helper
             StopMonitoring();
             _cancellationTokenSource.Dispose();
             _adbClient.Dispose();
+            _fastbootClient.Dispose();
         }
     }
 }

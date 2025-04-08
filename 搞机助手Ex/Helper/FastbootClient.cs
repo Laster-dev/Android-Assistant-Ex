@@ -365,23 +365,106 @@ namespace 搞机助手Ex.Helper
         }
 
         /// <summary>
-        /// Reboots the device to the specified mode
+        /// 使用fastboot命令重启设备到指定模式
         /// </summary>
-        /// <param name="mode">Boot mode (null for normal system, bootloader, recovery, fastboot)</param>
-        public async Task<CommandResult> RebootAsync(string mode = null, CancellationToken cancellationToken = default)
+        /// <param name="mode">目标模式: 0=系统, 1=引导模式, 2=恢复模式, 3=9008模式</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>命令执行结果</returns>
+        public async Task<CommandResult> RebootAsync(int mode, CancellationToken cancellationToken = default)
         {
+            // 命令基础部分
             string command = "reboot";
 
-            if (!string.IsNullOrWhiteSpace(mode))
+            // 根据模式参数添加不同的命令参数
+            switch (mode)
             {
-                // Validate mode
-                if (mode != "bootloader" && mode != "recovery" && mode != "fastboot")
-                    throw new ArgumentException("无效的重启模式。有效值为: bootloader, recovery, fastboot", nameof(mode));
+                case 0: // 系统模式 - 不带参数直接重启
+                        // 命令保持为 "reboot"
+                    break;
 
-                command += " " + mode;
+                case 1: // 引导模式 (Bootloader/Fastboot)
+                    command += " bootloader";
+                    break;
+
+                case 2: // 恢复模式 (Recovery)
+                    command += " recovery";
+                    break;
+
+                case 3: // 9008模式 (高通EDL紧急下载模式)
+                    command += " edl";  // 部分设备支持fastboot reboot edl命令进入9008模式
+                    break;
+
+                default:
+                    return new CommandResult
+                    {
+                        Success = false,
+                    };
             }
 
-            return await ExecuteCommandAsync(command, cancellationToken);
+            try
+            {
+                var startInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = FastbootPath,
+                    Arguments = command,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new System.Diagnostics.Process { StartInfo = startInfo })
+                {
+                    process.Start();
+
+                    // 异步读取输出
+                    var outputTask = process.StandardOutput.ReadToEndAsync();
+                    var errorTask = process.StandardError.ReadToEndAsync();
+
+                    // 等待进程完成或取消
+                    await Task.WhenAny(
+                        Task.Run(() => process.WaitForExit(), cancellationToken),
+                        Task.Delay(Timeout.Infinite, cancellationToken)
+                    );
+
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        try { process.Kill(); } catch { }
+                        cancellationToken.ThrowIfCancellationRequested();
+                    }
+
+                    string output = await outputTask;
+                    string error = await errorTask;
+
+                    // 特殊处理9008模式的结果，因为有些设备可能不支持直接通过fastboot进入EDL模式
+                    if (mode == 3 && (process.ExitCode != 0 || error.Contains("unknown command") || error.Contains("not supported")))
+                    {
+                        return new CommandResult
+                        {
+                            Success = false,
+                            Output = output,
+                        };
+                    }
+
+                    return new CommandResult
+                    {
+                        Success = process.ExitCode == 0,
+                        Output = output,
+                    };
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                return new CommandResult
+                {
+                    Success = false,
+                    Output = string.Empty,
+                };
+            }
         }
 
         #endregion
