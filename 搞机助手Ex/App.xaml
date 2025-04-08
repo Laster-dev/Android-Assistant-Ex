@@ -8,7 +8,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- 默认加载深色主题 -->
-                <ResourceDictionary Source="/Themes/LightTheme.xaml"/>
+                <ResourceDictionary Source="/Themes/DarkTheme.xaml"/>
                 <!-- 浅色主题将在需要时通过代码动态加载 -->
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="ModernMenuButtonStyle" TargetType="RadioButton">
@@ -98,6 +98,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

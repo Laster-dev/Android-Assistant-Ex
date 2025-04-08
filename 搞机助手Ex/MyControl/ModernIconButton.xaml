@@ -1,0 +1,189 @@
+﻿<UserControl x:Class="搞机助手Ex.MyControl.ModernIconButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             x:Name="Root"
+             Height="45" Width="135">
+
+    <Button x:Name="MainButton" 
+            Background="Transparent"
+            BorderThickness="0"
+            Padding="0"
+            Click="MainButton_Click">
+        <Button.Style>
+            
+            <Style TargetType="Button">
+ 
+
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Border x:Name="PART_Border"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="10"
+                                        Padding="{TemplateBinding Padding}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- 图标容器 -->
+                                        <ContentPresenter Grid.Column="0"
+                                                          Margin="3"
+                                                         Content="{Binding ElementName=Root, Path=Icon}"
+                                                         HorizontalAlignment="Center"
+                                                         VerticalAlignment="Center"
+                                                         RenderTransformOrigin="0.5,0.5">
+                                            <ContentPresenter.RenderTransform>
+                                                <ScaleTransform x:Name="IconScale" ScaleX="1" ScaleY="1"/>
+                                            </ContentPresenter.RenderTransform>
+                                        </ContentPresenter>
+
+                                        <!-- 文本 -->
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding ElementName=Root, Path=Text}"
+                                                   FontSize="{Binding ElementName=Root, Path=FontSize, FallbackValue=12}"
+                                                   Foreground="{Binding ElementName=Root, Path=Foreground, FallbackValue=Black}"
+                                                   FontWeight="{Binding ElementName=Root, Path=FontWeight, FallbackValue=Normal}"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center"
+                                                   Margin="8,0,0,0"
+                                                   RenderTransformOrigin="0.5,0.5">
+                                            <TextBlock.RenderTransform>
+                                                <ScaleTransform x:Name="TextScale" ScaleX="1" ScaleY="1"/>
+                                            </TextBlock.RenderTransform>
+                                        </TextBlock>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <!-- 默认状态 -->
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="IconScale" 
+                                                                 Storyboard.TargetProperty="ScaleX"
+                                                                 To="1" Duration="0:0:0.2">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation Storyboard.TargetName="IconScale" 
+                                                                 Storyboard.TargetProperty="ScaleY"
+                                                                 To="1" Duration="0:0:0.2">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation Storyboard.TargetName="TextScale" 
+                                                                 Storyboard.TargetProperty="ScaleX"
+                                                                 To="1" Duration="0:0:0.2">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation Storyboard.TargetName="TextScale" 
+                                                                 Storyboard.TargetProperty="ScaleY"
+                                                                 To="1" Duration="0:0:0.2">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                </Trigger>
+
+                                <!-- 鼠标悬停状态 -->
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{Binding ElementName=Root, Path=HoverBackground}"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="IconScale" 
+                                                                 Storyboard.TargetProperty="ScaleX"
+                                                                 To="1.45" Duration="0:0:0.2">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation Storyboard.TargetName="IconScale" 
+                                                                 Storyboard.TargetProperty="ScaleY"
+                                                                 To="1.45" Duration="0:0:0.2">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation Storyboard.TargetName="TextScale" 
+                                                                 Storyboard.TargetProperty="ScaleX"
+                                                                 To="1.1" Duration="0:0:0.2">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation Storyboard.TargetName="TextScale" 
+                                                                 Storyboard.TargetProperty="ScaleY"
+                                                                 To="1.1" Duration="0:0:0.2">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="IconScale" 
+                                                                 Storyboard.TargetProperty="ScaleX"
+                                                                 To="1" Duration="0:0:0.2">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation Storyboard.TargetName="IconScale" 
+                                                                 Storyboard.TargetProperty="ScaleY"
+                                                                 To="1" Duration="0:0:0.2">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation Storyboard.TargetName="TextScale" 
+                                                                 Storyboard.TargetProperty="ScaleX"
+                                                                 To="1" Duration="0:0:0.2">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation Storyboard.TargetName="TextScale" 
+                                                                 Storyboard.TargetProperty="ScaleY"
+                                                                 To="1" Duration="0:0:0.2">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+
+                                <!-- 按下状态 -->
+                             
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Button.Style>
+    </Button>
+</UserControl>

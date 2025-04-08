@@ -10,19 +10,43 @@ namespace 搞机助手Ex.Helper
 {
     public partial class ADBClient
     {
-        // Add FastbootPath property similar to AdbPath
-        private string fastbootPath = "Tools\\fastboot";
+        // FastbootClient 实例
+        private FastbootClient _fastbootClient;
+
+        // 保持原始路径不带引号
+        private string fastbootPath = "Tools\\fastboot.exe";
 
         /// <summary>
-        /// Gets or sets the path to the fastboot executable
+        /// 获取或设置fastboot可执行文件的路径
         /// </summary>
         public string FastbootPath
         {
             get { return fastbootPath; }
             set
             {
-                if (File.Exists(value)) fastbootPath = value;
-                else fastbootPath = "\"" + fastbootPath + "\"";
+                if (File.Exists(value))
+                {
+                    fastbootPath = value;
+                    // 更新FastbootClient的路径
+                    if (_fastbootClient != null)
+                        _fastbootClient.FastbootPath = value;
+                }
+                // 不自动添加引号，避免路径处理混乱
+            }
+        }
+
+        /// <summary>
+        /// 获取FastbootClient实例
+        /// </summary>
+        public FastbootClient FastbootClient
+        {
+            get
+            {
+                if (_fastbootClient == null)
+                {
+                    _fastbootClient = new FastbootClient(fastbootPath);
+                }
+                return _fastbootClient;
             }
         }
 
@@ -40,7 +64,7 @@ namespace 搞机助手Ex.Helper
             {
                 string[] outLines = devicesResult.Output.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
-                // Skip the first line which is just "List of devices attached"
+                // 跳过第一行 "List of devices attached"
                 foreach (var line in outLines.Skip(1))
                 {
                     // 使用更宽松的分隔符，因为不同ADB版本可能使用空格或制表符
@@ -55,9 +79,14 @@ namespace 搞机助手Ex.Helper
             if (devices.Count == 0)
             {
                 // 如果没有ADB设备，检查fastboot设备
-                var fastbootResult = await ExecuteCommandAsync($"\"{FastbootPath}\" devices", cancellationToken);
-                if (fastbootResult.Success && !string.IsNullOrWhiteSpace(fastbootResult.Output) &&
-                    fastbootResult.Output.Contains("\t"))
+                // 使用FastbootClient来检测fastboot设备
+                var fastbootDevices = await FastbootClient.GetDevicesAsync(cancellationToken);
+
+                // 记录fastboot输出以便调试
+                Debug.WriteLine($"Fastboot设备数量: {fastbootDevices.Count}");
+
+                // 如果检测到任何fastboot设备，则返回Fastboot模式
+                if (fastbootDevices.Count > 0)
                 {
                     return DeviceMode.Fastboot;
                 }
@@ -111,7 +140,7 @@ namespace 搞机助手Ex.Helper
         /// </summary>
         private async Task<bool> IsInRecoveryModeAsync(CancellationToken cancellationToken = default)
         {
-            // 检查方法3: 检查recovery特有进程
+            // 检查recovery特有进程
             var processResult = await ExecuteShellCommandAsync("ps | grep -E 'recovery|twrp'", false, cancellationToken);
             if (processResult.Success && !string.IsNullOrWhiteSpace(processResult.Output) &&
                 !processResult.Output.Contains("grep"))

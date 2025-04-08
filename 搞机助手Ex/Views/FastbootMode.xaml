@@ -8,7 +8,50 @@
       Width="600" Height="411.2"
       Title="FastbootMode">
 
-    <Grid>
-        
+    <Grid Background="Red">
+        <Button Content="Awesome Button"
+        Width="200" Height="60"
+        FontSize="16" FontWeight="Bold"
+        Foreground="White"
+        Cursor="Hand">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <!-- 背景渐变 -->
+                        <Border x:Name="BackgroundBorder" CornerRadius="4">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#6e8efb" Offset="0.0" />
+                                    <GradientStop Color="#a777e3" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+
+                        <!-- 按钮内容 -->
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <!-- 鼠标悬停 -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="BackgroundBorder" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+
+                        <!-- 鼠标按下 -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="BackgroundBorder" Property="RenderTransform">
+                                <Setter.Value>
+                                    <TranslateTransform X="0" Y="5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
     </Grid>
 </Page>

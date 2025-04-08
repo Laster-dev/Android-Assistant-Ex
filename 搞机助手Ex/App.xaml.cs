@@ -15,6 +15,8 @@ namespace 搞机助手Ex
 {
     public partial class App : Application
     {
+        private string _toolsPath;
+        private string _zipPath;
         public enum ThemeType
         {
             Dark,
@@ -24,7 +26,7 @@ namespace 搞机助手Ex
         /// <summary>
         /// 当前主题
         /// </summary>
-        private static ThemeType _currentTheme = ThemeType.Light;  // 不需要可空类型
+        private static ThemeType _currentTheme = ThemeType.Dark;
 
         /// <summary>
         /// 获取当前主题并设置新主题
@@ -40,88 +42,79 @@ namespace 搞机助手Ex
                 if (_currentTheme != value)
                 {
                     _currentTheme = value;
-                    // 使用正确的方式调用异步方法，确保不会阻塞UI线程
-                    SwitchThemeAsync(value).ConfigureAwait(false);
+                    // 修复：在UI线程上正确处理异步操作
+                    Application.Current.Dispatcher.InvokeAsync(() =>
+                        SwitchThemeAsync(value));
                 }
             }
         }
 
-        // 重命名为Async来表明这是异步方法
+        // 异步切换主题方法
         public static async Task SwitchThemeAsync(ThemeType theme)
         {
             try
             {
                 var window = Application.Current.MainWindow;
-                if (window == null) return;  // 检查窗口是否存在
+                if (window == null) return;
 
                 var content = window.Content as UIElement;
                 if (content == null) return;
 
-                // 在UI线程上执行动画
-                await Application.Current.Dispatcher.InvokeAsync(async () =>
+                // 所有操作已经在UI线程上，无需额外的Dispatcher调用
+                // 创建淡出动画
+                var fadeOutAnimation = new DoubleAnimation
                 {
-                    try
+                    From = 1,
+                    To = 0.3,
+                    Duration = TimeSpan.FromMilliseconds(100)
+                };
+
+                // 使用简单的延迟而不是复杂的TaskCompletionSource
+                content.BeginAnimation(UIElement.OpacityProperty, fadeOutAnimation);
+                await Task.Delay(120); // 确保动画有足够时间完成
+
+                // 切换主题资源
+                var mergedDicts = Application.Current.Resources.MergedDictionaries;
+
+                // 移除现有主题资源
+                for (int i = mergedDicts.Count - 1; i >= 0; i--)
+                {
+                    var dict = mergedDicts[i];
+                    string source = dict.Source?.ToString() ?? "";
+                    if (source.Contains("DarkTheme.xaml") || source.Contains("LightTheme.xaml"))
                     {
-                        // 创建淡出动画
-                        var fadeOutAnimation = new DoubleAnimation
-                        {
-                            From = 1,
-                            To = 0.3,
-                            Duration = TimeSpan.FromMilliseconds(100)
-                        };
-
-                        // 等待淡出动画完成
-                        var tcs = new TaskCompletionSource<bool>();
-                        fadeOutAnimation.Completed += (s, e) => tcs.SetResult(true);
-
-                        // 应用淡出动画
-                        content.BeginAnimation(UIElement.OpacityProperty, fadeOutAnimation);
-                        await tcs.Task;
-
-                        // 切换主题资源
-                        var mergedDicts = Application.Current.Resources.MergedDictionaries;
-
-                        // 移除现有主题资源
-                        for (int i = mergedDicts.Count - 1; i >= 0; i--)
-                        {
-                            var dict = mergedDicts[i];
-                            string source = dict.Source?.ToString() ?? "";
-                            if (source.Contains("DarkTheme.xaml") || source.Contains("LightTheme.xaml"))
-                            {
-                                mergedDicts.RemoveAt(i);
-                            }
-                        }
-
-                        // 添加新的主题字典
-                        var newThemeUri = new Uri(
-                            theme == ThemeType.Dark
-                            ? "pack://application:,,,/Themes/DarkTheme.xaml"
-                            : "pack://application:,,,/Themes/LightTheme.xaml",
-                            UriKind.Absolute);
-
-                        var newThemeDict = new ResourceDictionary() { Source = newThemeUri };
-                        mergedDicts.Add(newThemeDict);
-
-                        // 创建淡入动画
-                        var fadeInAnimation = new DoubleAnimation
-                        {
-                            From = 0.3,
-                            To = 1,
-                            Duration = TimeSpan.FromMilliseconds(100)
-                        };
-
-                        // 应用淡入动画
-                        content.BeginAnimation(UIElement.OpacityProperty, fadeInAnimation);
+                        mergedDicts.RemoveAt(i);
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"切换主题动画时出错: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                });
+                }
+
+                // 添加新的主题字典
+                var newThemeUri = new Uri(
+                    theme == ThemeType.Dark
+                    ? "pack://application:,,,/Themes/DarkTheme.xaml"
+                    : "pack://application:,,,/Themes/LightTheme.xaml",
+                    UriKind.Absolute);
+
+                var newThemeDict = new ResourceDictionary() { Source = newThemeUri };
+                mergedDicts.Add(newThemeDict);
+
+                // 创建淡入动画
+                var fadeInAnimation = new DoubleAnimation
+                {
+                    From = 0.3,
+                    To = 1,
+                    Duration = TimeSpan.FromMilliseconds(100)
+                };
+
+                // 应用淡入动画
+                content.BeginAnimation(UIElement.OpacityProperty, fadeInAnimation);
+
+                // 添加诊断信息
+                Console.WriteLine($"Theme switched to: {theme}");
+
+              
             }
             catch (Exception ex)
             {
-                // 确保异常信息被显示而不是忽略
                 MessageBox.Show($"切换主题时出错: {ex.Message}", "主题切换错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -135,15 +128,23 @@ namespace 搞机助手Ex
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
                 TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
-                // 应用初始化前加载主题
+                _toolsPath = Path.Combine(Directory.GetCurrentDirectory(), "Tools");
+                _zipPath = Path.Combine(Directory.GetCurrentDirectory(), "Tools.zip");
+                if (!Directory.Exists("Tools"))
+                {
+                    File.WriteAllBytes("Tools.zip", Resource1.Tools);
+
+                    ZipFile.ExtractToDirectory("Tools.zip", "Tools\\");
+
+                    File.Delete("Tools.zip");
+                }
+                // 先应用初始主题，再调用base.OnStartup
                 ApplyInitialTheme();
 
                 base.OnStartup(e);
-
             }
             catch (Exception ex)
             {
-                // 不要忽略异常，至少记录或显示它们
                 MessageBox.Show($"启动时发生错误: {ex.Message}", "启动错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown(-1);
             }
@@ -153,9 +154,6 @@ namespace 搞机助手Ex
         {
             try
             {
-                // 从注册表或其他设置源确定初始主题
-                // 为了简单起见，我们使用默认的Light主题
-
                 var mergedDicts = Application.Current.Resources.MergedDictionaries;
 
                 // 添加基础主题字典

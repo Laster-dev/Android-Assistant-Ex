@@ -463,6 +463,7 @@ namespace 搞机助手Ex.Helper
                 {
                     Success = false,
                     Output = string.Empty,
+                    ErrorMessage = ex.Message
                 };
             }
         }

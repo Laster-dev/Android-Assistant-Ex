@@ -34,11 +34,18 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>RUNOOB-SVG-IMAGE.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -63,7 +70,15 @@
     <Compile Include="Helper\DeviceMode.cs" />
     <Compile Include="Helper\DeviceModeDetection.cs" />
     <Compile Include="Helper\FastbootClient.cs" />
+    <Compile Include="Helper\InitializationService.cs" />
+    <Compile Include="Helper\PackageInfoQuery.cs" />
+    <Compile Include="MyControl\APPInfoButton.xaml.cs">
+      <DependentUpon>APPInfoButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MyControl\HorizontalBatteryControl.cs" />
+    <Compile Include="MyControl\ModernIconButton.xaml.cs">
+      <DependentUpon>ModernIconButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -78,16 +93,16 @@
     <Compile Include="Views\FastbootMode.xaml.cs">
       <DependentUpon>FastbootMode.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\RecoveryMode.xaml.cs">
       <DependentUpon>RecoveryMode.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SystemMode.xaml.cs">
       <DependentUpon>SystemMode.xaml</DependentUpon>
     </Compile>
-    <Page Include="FormWindow.xaml">
+    <Compile Include="Windows\Windows_Freeze_App.xaml.cs">
+      <DependentUpon>Windows_Freeze_App.xaml</DependentUpon>
+    </Compile>
+    <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -95,10 +110,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FormWindow.xaml.cs">
-      <DependentUpon>FormWindow.xaml</DependentUpon>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MyControl\APPInfoButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MyControl\ModernIconButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\DarkTheme.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -119,15 +142,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\RecoveryMode.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SystemMode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Windows_Freeze_App.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -152,6 +175,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="RUNOOB-SVG-IMAGE.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\APK.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

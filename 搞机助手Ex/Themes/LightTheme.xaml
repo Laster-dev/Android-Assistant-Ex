@@ -103,13 +103,19 @@
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <ContentPresenter x:Name="contentPresenter" 
-                                  Content="{TemplateBinding Content}" 
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  VerticalAlignment="Center"
-                                  RenderTransformOrigin="0.5,0.5">
+                              Content="{TemplateBinding Content}" 
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              VerticalAlignment="Center"
+                              RenderTransformOrigin="0.5,0.5">
                             <ContentPresenter.Resources>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="TextDecorations" Value="Underline" />
+                                    <!-- 添加条件触发器，在按钮禁用时移除下划线 -->
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" Value="False">
+                                            <Setter Property="TextDecorations" Value="{x:Null}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
                                 </Style>
                             </ContentPresenter.Resources>
                             <!-- 添加用于缩放动画的RenderTransform -->
@@ -125,11 +131,11 @@
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="contentScale" 
-                                                 Storyboard.TargetProperty="ScaleX" 
-                                                 To="0.9" Duration="0:0:0.1" />
+                                             Storyboard.TargetProperty="ScaleX" 
+                                             To="0.9" Duration="0:0:0.1" />
                                         <DoubleAnimation Storyboard.TargetName="contentScale" 
-                                                 Storyboard.TargetProperty="ScaleY" 
-                                                 To="0.9" Duration="0:0:0.1" />
+                                             Storyboard.TargetProperty="ScaleY" 
+                                             To="0.9" Duration="0:0:0.1" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
@@ -137,14 +143,30 @@
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="contentScale" 
-                                                 Storyboard.TargetProperty="ScaleX" 
-                                                 To="1" Duration="0:0:0.1" />
+                                             Storyboard.TargetProperty="ScaleX" 
+                                             To="1" Duration="0:0:0.1" />
                                         <DoubleAnimation Storyboard.TargetName="contentScale" 
-                                                 Storyboard.TargetProperty="ScaleY" 
-                                                 To="1" Duration="0:0:0.1" />
+                                             Storyboard.TargetProperty="ScaleY" 
+                                             To="1" Duration="0:0:0.1" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
+                        </Trigger>
+
+                        <!-- 添加按钮禁用时的样式 -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="#FFADADAD" />
+                            <!-- 灰色前景 -->
+                            <Setter Property="Opacity" Value="0.6" />
+                            <!-- 降低透明度 -->
+                            <Setter Property="Cursor" Value="Arrow" />
+                            <!-- 使用默认箭头光标 -->
+                            <Setter TargetName="contentPresenter" Property="Effect">
+                                <Setter.Value>
+                                    <BlurEffect Radius="0.5" />
+                                    <!-- 轻微模糊效果 -->
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -152,6 +174,14 @@
         </Setter>
         <Setter Property="Foreground" Value="{StaticResource InfoBrush}" />
         <Setter Property="Cursor" Value="Hand" />
+
+        <!-- 添加样式触发器，以便可以在Style级别处理禁用状态 -->
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#FFADADAD" />
+                <!-- 灰色前景，与模板触发器一致 -->
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <!-- Button 样式 -->

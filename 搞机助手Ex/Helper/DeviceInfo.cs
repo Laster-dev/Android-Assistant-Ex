@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Threading;
+using System;
 
 namespace 搞机助手Ex.Helper
 {
@@ -35,6 +36,14 @@ namespace 搞机助手Ex.Helper
         /// </summary>
         public string CpuArchitecture { get; set; }
 
+        /// <summary>
+        /// 电池电量
+        /// </summary>
+        public int BatteryLevel { get; set; } = -1; // 默认值为-1，表示未知或未获取到电量信息
+
+        public int batteryTemperature { get; set; }=-1;
+
+        public int batteryVoltage { get; set; } = -1;
         /// <summary>
         /// 设备当前模式
         /// </summary>
@@ -93,6 +102,11 @@ namespace 搞机助手Ex.Helper
                     deviceInfo.DeviceCodeName = await adbClient.GetDeviceCodeNameAsync(cancellationToken);
                     deviceInfo.SerialNumber = await adbClient.GetSerialNumberAsync(cancellationToken);
                     deviceInfo.CpuArchitecture = await adbClient.GetCpuArchitectureAsync(cancellationToken);
+                    //deviceInfo.BatteryLevel = await adbClient.GetBatteryLevelAsync(cancellationToken);
+                    var (_batteryLevel, _batteryTemperature, _batteryVoltage) = await adbClient.GetBatteryInfoAsync();
+                    deviceInfo.BatteryLevel = _batteryLevel;
+                    deviceInfo.batteryTemperature = _batteryTemperature;
+                    deviceInfo.batteryVoltage = _batteryVoltage;
                 }
                 catch
                 {

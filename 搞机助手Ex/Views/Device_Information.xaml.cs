@@ -89,7 +89,8 @@ namespace 搞机助手Ex.Views
                     TextBlock_DeviceCode.Text = $"设备代号：{devices.DeviceCodeName ?? "未知"}";
                     TextBlock_SN.Text = $"SN：{devices.SerialNumber ?? "未知"}";
                     TextBlock_CPUCode.Text = $"CPU：{devices.CpuArchitecture ?? "未知"}";
-
+                    BatteryCtrl.Capacity = devices.BatteryLevel;
+                    Batteryinfo.Text = $"电池温度：{devices.batteryTemperature / 10.0:F1}°C    电池电压：{devices.batteryVoltage}mV";
                     // 获取设备模式的字符串表示
                     string modeString = GetDeviceModeDisplayString(devices.CurrentMode);
                     TextBolck_Status.Text = $"设备状态：{modeString}";

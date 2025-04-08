@@ -33,7 +33,7 @@
                 <TextBlock x:Name="TextBlock_CPUCode" Text="CPU代号：" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13"/>
             </Grid>
             <StackPanel Grid.Row="1">
-                <TextBlock x:Name="TextBolck_Status" Text="没有检测到设备" FontSize="18" FontWeight="Bold"/>
+                <TextBlock x:Name="TextBolck_Status" Text="软件初始化中..." FontSize="18" FontWeight="Bold"/>
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -58,14 +58,17 @@
                     <StackPanel x:Name="StackPanel_Fastboot" Orientation="Horizontal" Grid.Row="2">
                         <TextBlock Text="引导模式下重启到" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
                         <Button Content="系统模式" Click="Button_Click_4" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
-                        <Button Content="Recovery" Click="Button_Click_5" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
-                        <Button Content="FastBoot" Click="Button_Click_6" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
+                        <Button Content="Recovery" Click="Button_Click_6" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
+                        <Button Content="FastBoot" Click="Button_Click_5" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
                         <Button Content="9008" Click="Button_Click_7" Style="{StaticResource LinkButton}" FontSize="16" Margin="20"/>
                     </StackPanel>
                     <StackPanel Grid.Row="3" Orientation="Horizontal">
-                        <MyControl:HorizontalBatteryControl x:Name="BatteryCtrl" Margin="10" Height="30" Width="100"/>
+                        <MyControl:HorizontalBatteryControl x:Name="BatteryCtrl" Margin="20,10,0,10" Height="30" Width="90"/>
                         <TextBlock VerticalAlignment="Center"
-                            Text="{Binding Path = Capacity, ElementName=BatteryCtrl, StringFormat=当前电池电量: {0:F0}%}"/>
+                            Text="{Binding Path = Capacity, ElementName=BatteryCtrl, StringFormat=当前电池电量: {0:F0}%}" FontSize="15"/>
+                        <TextBlock x:Name="Batteryinfo" VerticalAlignment="Center" FontSize="15"/>
+
+
                     </StackPanel>
 
                 </Grid>

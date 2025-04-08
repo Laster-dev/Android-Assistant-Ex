@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace 搞机助手Ex.Helper
 {
@@ -21,13 +23,11 @@ namespace 搞机助手Ex.Helper
         // SemaphoreSlim for thread-safe command execution
         private readonly SemaphoreSlim _commandLock = new SemaphoreSlim(1, 1);
 
-        // ADB server process
-        private Process _adbServerProcess;
         private bool _serverInitialized = false;
 
         public ADBClient()
         {
-            InitializeAdbServer();
+            _ = InitializeAdbServerAsync();
         }
 
         public ADBClient(string adbPath)
@@ -35,10 +35,10 @@ namespace 搞机助手Ex.Helper
             if (File.Exists(adbPath))
                 AdbPath = adbPath;
 
-            InitializeAdbServer();
+            _ = InitializeAdbServerAsync();
         }
 
-        private void InitializeAdbServer()
+        private async Task InitializeAdbServerAsync()
         {
             if (_serverInitialized)
                 return;
@@ -55,11 +55,19 @@ namespace 搞机助手Ex.Helper
                 WindowStyle = ProcessWindowStyle.Hidden
             };
 
-            using (var process = Process.Start(startInfo))
+            // 使用Task.Run将进程启动和管理移至后台线程
+            await Task.Run(() =>
             {
-                process.WaitForExit();
-                _serverInitialized = process.ExitCode == 0;
-            }
+                using (var process = Process.Start(startInfo))
+                {
+                    // 我们不等待进程完成，但仍然需要初始化它
+                    // 可以选择性地读取一些输出以确认进程已正确启动
+                    string output = process.StandardOutput.ReadLine();
+                    // 根据需要处理输出
+                }
+
+                _serverInitialized = true;
+            });
         }
 
         #region Core Command Execution
@@ -67,16 +75,16 @@ namespace 搞机助手Ex.Helper
         /// <summary>
         /// Executes an ADB command asynchronously
         /// </summary>
-        public async Task<CommandResult> ExecuteCommandAsync(string command, CancellationToken cancellationToken = default)
+        public async Task<CommandResult> ExecuteCommandAsync(string command, CancellationToken cancellationToken = default, bool infiniteWait = false)
         {
             try
             {
                 await _commandLock.WaitAsync(cancellationToken);
 
-                // Ensure server is started
+                // 确保服务器已启动
                 if (!_serverInitialized)
                 {
-                    InitializeAdbServer();
+                    _ = InitializeAdbServerAsync();
                 }
 
                 var result = new CommandResult();
@@ -113,20 +121,31 @@ namespace 搞机助手Ex.Helper
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
 
-                    // Create a task that completes when the process exits
-                    var processExitTask = Task.Run(() =>
+                    // 根据infiniteWait参数决定是否使用无限等待
+                    bool completed;
+                    if (infiniteWait)
                     {
-                        return process.WaitForExit(CommandTimeout);
-                    }, cancellationToken);
-
-                    // Wait for the process to complete or timeout
-                    bool completed = await processExitTask;
+                        // 无限等待进程完成，但仍然尊重取消令牌
+                        await Task.Run(() =>
+                        {
+                            process.WaitForExit();
+                        }, cancellationToken);
+                        completed = true;
+                    }
+                    else
+                    {
+                        // 使用原有的超时逻辑
+                        completed = await Task.Run(() =>
+                        {
+                            return process.WaitForExit(CommandTimeout);
+                        }, cancellationToken);
+                    }
 
                     if (!completed)
                     {
                         try { process.Kill(); } catch { }
                         result.Success = false;
-                        result.ErrorMessage = "Command execution timed out";
+                        result.ErrorMessage = "命令执行超时";
                     }
                     else
                     {
@@ -147,9 +166,9 @@ namespace 搞机助手Ex.Helper
         /// <summary>
         /// Executes an ADB command synchronously (wrapper around async method)
         /// </summary>
-        public CommandResult ExecuteCommand(string command)
+        public CommandResult ExecuteCommand(string command, bool infiniteWait = false)
         {
-            return ExecuteCommandAsync(command).GetAwaiter().GetResult();
+            return ExecuteCommandAsync(command, default, infiniteWait).GetAwaiter().GetResult();
         }
 
         // This method is no longer needed as we're calling ADB directly
@@ -289,6 +308,50 @@ namespace 搞机助手Ex.Helper
 
         #region App Management
 
+        // 获取应用包名的类型（支持多选）
+        [Flags]
+        public enum PackageFilterType
+        {
+            All = 0,          // 全部
+            ThirdParty = 1,   // 第三方应用
+            System = 2,       // 系统应用
+            Frozen = 4,       // 已冻结的应用
+            Unfrozen = 8      // 未冻结的应用
+        }
+
+        // 修改后的方法
+        public async Task<List<string>> GetAllPackageNamesAsync(PackageFilterType filterType = PackageFilterType.All, CancellationToken cancellationToken = default)
+        {
+            string commands = "pm list packages";
+
+            // 构建筛选条件的命令
+            if (filterType.HasFlag(PackageFilterType.ThirdParty))
+                commands+=(" -3");
+            if (filterType.HasFlag(PackageFilterType.System))
+                commands += (" -s");
+            if (filterType.HasFlag(PackageFilterType.Frozen))
+                commands += (" -d"); // 假设存在冻结相关命令
+            if (filterType.HasFlag(PackageFilterType.Unfrozen))
+                commands += (" -e"); // 假设存在未冻结相关命令
+
+            // 如果没有明确的筛选条件，则获取全部
+
+            var results = new List<string>();
+
+            // 执行所有命令并合并结果
+
+                var result = await ExecuteShellCommandAsync(commands, false, cancellationToken);
+                if (result.Success)
+                {
+                    results.AddRange(result.Output.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(line => line.Trim().Replace("package:", "")));
+                }
+            
+
+            // 去重，返回最终结果
+            return results.Distinct().ToList();
+        }
+
         public async Task<CommandResult> InstallAppAsync(string appPath, CancellationToken cancellationToken = default)
         {
             try
@@ -306,6 +369,16 @@ namespace 搞机助手Ex.Helper
             return await ExecuteCommandAsync($"uninstall \"{packageName}\"", cancellationToken);
         }
 
+        //冻结应用
+        public async Task<CommandResult> FreezeAppAsync(string packageName, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteShellCommandAsync($"pm disable-user --user 0 {packageName}", true, cancellationToken);
+        }
+        //解冻应用
+        public async Task<CommandResult> UnfreezeAppAsync(string packageName, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteShellCommandAsync($"pm enable --user 0 {packageName}", true, cancellationToken);
+        }
         #endregion
 
         #region Device Information
@@ -344,6 +417,57 @@ namespace 搞机助手Ex.Helper
         {
             var result = await ExecuteShellCommandAsync("getprop ro.product.cpu.abi", false, cancellationToken);
             return result.Success ? result.Output.Trim() : string.Empty;
+        }
+
+        /// <summary>
+        /// 获取电池电量
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<(int BatteryLevel, int BatteryTemperature, int BatteryVoltage)> GetBatteryInfoAsync(CancellationToken cancellationToken = default)
+        {
+            var result = await ExecuteShellCommandAsync("dumpsys battery", false, cancellationToken);
+            if (result.Success)
+            {
+                int batteryLevel = -1;
+                int batteryTemperature = -1;
+                int batteryVoltage = -1;
+
+                var lines = result.Output.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var line in lines)
+                {
+                    var trimmedLine = line.TrimStart();
+
+                    if (trimmedLine.StartsWith("level:"))
+                    {
+                        var parts = trimmedLine.Split(':');
+                        if (parts.Length > 1 && int.TryParse(parts[1].Trim(), out var level))
+                        {
+                            batteryLevel = level;
+                        }
+                    }
+                    else if (trimmedLine.StartsWith("temperature:"))
+                    {
+                        var parts = trimmedLine.Split(':');
+                        if (parts.Length > 1 && int.TryParse(parts[1].Trim(), out var temperature))
+                        {
+                            batteryTemperature = temperature;
+                        }
+                    }
+                    else if (trimmedLine.StartsWith("voltage:"))
+                    {
+                        var parts = trimmedLine.Split(':');
+                        if (parts.Length > 1 && int.TryParse(parts[1].Trim(), out var voltage))
+                        {
+                            batteryVoltage = voltage;
+                        }
+                    }
+                }
+
+                return (batteryLevel, batteryTemperature, batteryVoltage);
+            }
+
+            return (-1, -1, -1); // Return -1 for all values to indicate failure
         }
 
         #endregion
