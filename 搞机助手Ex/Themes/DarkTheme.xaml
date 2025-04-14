@@ -1010,4 +1010,74 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Key="ScrcpyButtonStyle" TargetType="Button">
+        <!-- 基础属性设置 -->
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+        <!-- 按钮模板 -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <!-- 带圆角的背景边框 -->
+                    <Border x:Name="ButtonBorder" 
+                            CornerRadius="3"
+                            Background="{TemplateBinding Background}">
+
+                        <!-- 内容为图片的Grid -->
+                        <Grid>
+                            <Image x:Name="ButtonImage" 
+                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                   Stretch="Uniform"
+                                   Margin="2"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- 视觉状态和触发器 -->
+                    <ControlTemplate.Triggers>
+                        <!-- 鼠标悬停时背景加深 -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#15000000"/>
+                        </Trigger>
+
+                        <!-- 按下时背景更深 -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#25000000"/>
+                            <!-- 按下时缩小至80% -->
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <!-- 动画过渡效果 -->
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Button.MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" 
+                                        To="#15000000" Duration="0:0:0.1"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Button.MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" 
+                                        To="Transparent" Duration="0:0:0.1"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

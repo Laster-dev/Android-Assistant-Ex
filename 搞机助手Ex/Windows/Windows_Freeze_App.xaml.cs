@@ -24,9 +24,29 @@ namespace 搞机助手Ex.Windows
     /// </summary>
     public partial class Windows_Freeze_App : Window
     {
-        public Windows_Freeze_App()
+        public Windows_Freeze_App(int type = 0)//0:冻结应用  1：启动虚拟桌面APP
         {
             InitializeComponent();
+            switch(type)
+            {
+                case 0:
+                    textblock_title.Text = "冻结应用";
+                    冻结Panel.Visibility = Visibility.Visible;
+                    this.Loaded += Window_Loaded_冻结应用;
+                    break;
+                case 1:
+                    textblock_title.Text = "虚拟桌面";
+                    TabItem_冻结应用.Header = "三方应用";
+                    TabItem_解冻应用.Header = "系统应用";
+                    this.Loaded += Window_Loaded_虚拟桌面;
+                    break;
+                default:
+                    textblock_title.Text = "冻结应用";
+                    冻结Panel.Visibility = Visibility.Visible;
+                    this.Loaded += Window_Loaded_冻结应用;
+                    break;
+            }
+
         }
         #region 窗体控制
 
@@ -64,8 +84,57 @@ namespace 搞机助手Ex.Windows
 
         #endregion
 
+        private async void Window_Loaded_虚拟桌面(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+               ScrcpyHelper scrcpyHelper = new ScrcpyHelper();
+                var scrcpyAppInfos = await scrcpyHelper.GetApplicationsAsync();
+                foreach (var appInfo in scrcpyAppInfos)
+                {
+                    AppInfo appInfo1 = new AppInfo
+                    {
+                        IconUrl = null,
+                        AppName = appInfo.AppName,
+                        PackageName = appInfo.PackageName
+                    };
+                    // 创建 APPInfoButton 实例
+                    var button = new APPInfoButton(appInfo1)
+                    {
+                        Margin = new Thickness(5)
+                    };
+                    button.Click += (ns, nargs) =>
+                    {
+                        //2880x1620
+                        Windows_Scrcpy scrcpy = new Windows_Scrcpy($"--no-vd-system-decorations --new-display=1920x1080/192 --start-app={appInfo1.PackageName}");
+                        scrcpy.Show();
+                        this.Close();
+                    };
+                    
+                       
+                        // 在UI线程上创建和添加按钮
+                        await Dispatcher.InvokeAsync(() =>
+                        {
+                            if (appInfo.Type == "-")//三方
+                            {
+                                Stackpanel_冻结应用.Children.Add(button);
+                            }
+                           
+                            else
+                            {
+                                Stackpanel_解冻应用.Children.Add(button);
+                            }
+                        });
+                    
+                }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"加载应用时发生错误: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private async void Window_Loaded_冻结应用(object sender, RoutedEventArgs e)
         {
             try
             {

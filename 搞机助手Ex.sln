@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "搞机助手Ex", "搞机助
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "测试", "测试\测试.csproj", "{3297D929-9E28-4E9A-8EF0-2C331040299B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wpftest", "wpftest\wpftest.csproj", "{B30F97C2-FD06-40E9-8DE8-98F4F6BB5F17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3297D929-9E28-4E9A-8EF0-2C331040299B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3297D929-9E28-4E9A-8EF0-2C331040299B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3297D929-9E28-4E9A-8EF0-2C331040299B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B30F97C2-FD06-40E9-8DE8-98F4F6BB5F17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B30F97C2-FD06-40E9-8DE8-98F4F6BB5F17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B30F97C2-FD06-40E9-8DE8-98F4F6BB5F17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B30F97C2-FD06-40E9-8DE8-98F4F6BB5F17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,159 @@
+﻿<Window x:Class="搞机助手Ex.Windows.Windows_Scrcpy"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:搞机助手Ex.Windows" xmlns:winform="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        mc:Ignorable="d" Focusable="False"
+
+        UseLayoutRounding="True"
+        Loaded="Window_Loaded"
+        AllowsTransparency="False"
+        SizeChanged="Window_SizeChanged"
+        Background="{DynamicResource WindowBackground}"
+        Height="450" Width="223">
+    <Window.Resources>
+        <DrawingImage x:Key="电源">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V1024 H1024 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M1024,1024z M0,0z M170.666667,426.666667L853.333333,426.666667 853.333333,896 170.666667,896 170.666667,426.666667z" />
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M1024,1024z M0,0z M128,426.666667A42.666667,42.666667,0,0,1,170.666667,384L853.333333,384A42.666667,42.666667,0,0,1,896,426.666667L896,896A42.666667,42.666667,0,0,1,853.333333,938.666667L170.666667,938.666667A42.666667,42.666667,0,0,1,128,896L128,426.666667z M213.333333,469.333333L213.333333,853.333333 810.666667,853.333333 810.666667,469.333333 213.333333,469.333333z" />
+                    <GeometryDrawing Brush="{DynamicResource SecondaryBackground}" Geometry="F1 M1024,1024z M0,0z M469.333333,746.666667L469.333333,576 554.666667,576 554.666667,746.666667 469.333333,746.666667z" />
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M1024,1024z M0,0z M298.666667,298.666667C298.666667,180.842667 394.176,85.333334 512,85.333333 629.824,85.333332 725.333333,180.842666 725.333333,298.666667L725.333333,469.333333 298.666667,469.333333 298.666667,298.666667z M512,170.666667A128,128,0,0,0,384,298.666667L384,384 640,384 640,298.666667A128,128,0,0,0,512,170.666667z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="12">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M24,24z M0,0z M12,3C11.45,3,11,3.45,11,4L11,12C11,12.55 11.45,13 12,13 12.55,13 13,12.55 13,12L13,4C13,3.45,12.55,3,12,3z M17.14,5.86C16.75,6.25 16.76,6.86 17.13,7.25 18.26,8.45 18.96,10.05 19,11.82 19.09,15.65 15.92,18.95 12.09,18.99 8.18,19.05 5,15.9 5,12 5,10.16 5.71,8.49 6.87,7.24 7.24,6.85 7.24,6.24 6.86,5.86 6.46,5.46 5.81,5.47 5.43,5.88 3.98,7.42 3.07,9.47 3,11.74 2.86,16.62 6.83,20.84 11.71,20.99 16.81,21.15 21,17.06 21,11.99 21,9.62 20.08,7.48 18.58,5.88 18.2,5.47 17.54,5.46 17.14,5.86z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="音量+">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V1024 H1024 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M1024,1024z M0,0z M512,170.666667L277.333333,362.666667 128,362.666667 128,661.333333 277.333333,661.333333 512,853.333333 512,170.666667z" />
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M1024,1024z M0,0z M530.282667,132.117333A42.666667,42.666667,0,0,1,554.666667,170.666667L554.666667,853.333333A42.666667,42.666667,0,0,1,484.970667,886.357333L262.122667,704 128,704A42.666667,42.666667,0,0,1,85.333333,661.333333L85.333333,362.666667A42.666667,42.666667,0,0,1,128,320L262.101333,320 484.970667,137.642667A42.666667,42.666667,0,0,1,530.261333,132.096z M469.333333,260.693333L304.362667,395.690667A42.666667,42.666667,0,0,1,277.333333,405.333333L170.666667,405.333333 170.666667,618.666667 277.333333,618.666667A42.666667,42.666667,0,0,1,304.362667,628.309333L469.333333,763.306667 469.333333,260.693333z M640,469.333333L938.666667,469.333333 938.666667,554.666667 640,554.666667 640,469.333333z" />
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M1024,1024z M0,0z M832,362.666667L832,661.333333 746.666667,661.333333 746.666667,362.666667 832,362.666667z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="音量-">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V1024 H1024 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M1024,1024z M0,0z M512,170.666667L277.333333,362.666667 128,362.666667 128,661.333333 277.333333,661.333333 512,853.333333 512,170.666667z" />
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M1024,1024z M0,0z M530.282667,132.117333A42.666667,42.666667,0,0,1,554.666667,170.666667L554.666667,853.333333A42.666667,42.666667,0,0,1,484.970667,886.357333L262.122667,704 128,704A42.666667,42.666667,0,0,1,85.333333,661.333333L85.333333,362.666667A42.666667,42.666667,0,0,1,128,320L262.101333,320 484.970667,137.642667A42.666667,42.666667,0,0,1,530.261333,132.096z M469.333333,260.693333L304.362667,395.690667A42.666667,42.666667,0,0,1,277.333333,405.333333L170.666667,405.333333 170.666667,618.666667 277.333333,618.666667A42.666667,42.666667,0,0,1,304.362667,628.309333L469.333333,763.306667 469.333333,260.693333z M640,469.333333L938.666667,469.333333 938.666667,554.666667 640,554.666667 640,469.333333z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="设置">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V1024 H1024 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M1024,1024z M0,0z M385.621333,87.381333A42.666667,42.666667,0,0,1,436.821333,108.8C451.648,138.176 480.298666,156.842667 512,156.842667 542.997333,156.842667 571.093333,139.008 586.176,110.72L587.306667,108.544A42.666667,42.666667,0,0,1,638.357333,87.381333A422.656,422.656,0,0,1,802.88,186.837333A42.666667,42.666667,0,0,1,809.728,239.402667A96.554667,96.554667,0,0,0,808.021333,335.146667C824.810666,365.589334,855.04,381.184,884.757333,380.010667A42.666667,42.666667,0,0,1,928.149333,413.568C935.04,445.269333 938.666667,478.208 938.666667,512 938.666667,545.770667 935.04,578.730667 928.149333,610.432A42.666667,42.666667,0,0,1,884.757333,644.010667C855.04,642.816,824.810666,658.410667,808,688.853333A96.554667,96.554667,0,0,0,809.728,784.576A42.666667,42.666667,0,0,1,802.88,837.162667A422.656,422.656,0,0,1,638.336,936.597333A42.666667,42.666667,0,0,1,587.136,915.178667C572.352,885.802667 543.701333,867.136 512,867.136 480.298667,867.136 451.626667,885.802667 436.821333,915.2A42.666667,42.666667,0,0,1,385.621333,936.597333A422.485333,422.485333,0,0,1,221.098667,837.12A42.666667,42.666667,0,0,1,214.272,784.533333A96.448,96.448,0,0,0,215.978667,688.853333C199.189334,658.410666,168.96,642.794666,139.242667,643.968A42.666667,42.666667,0,0,1,95.8719999999999,610.432A462.250667,462.250667,0,0,1,85.333333,512C85.333333,478.208,88.96,445.269333,95.829333,413.568A42.666667,42.666667,0,0,1,139.242667,379.989333C168.96,381.184,199.189334,365.589333,216,335.146667A96.554667,96.554667,0,0,0,214.293333,239.424A42.666667,42.666667,0,0,1,221.12,186.858667A422.4,422.4,0,0,1,385.621333,87.381333z" />
+                    <GeometryDrawing Brush="{DynamicResource SecondaryBackground}" Geometry="F1 M1024,1024z M0,0z M341.333333,512A170.666667,170.666667,0,1,1,682.666667,512A170.666667,170.666667,0,0,1,341.333333,512z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="自适应">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M24,24z M0,0z M21,8.59L21,4C21,3.45,20.55,3,20,3L15.41,3C14.52,3,14.07,4.08,14.7,4.71L16.29,6.3 6.29,16.3 4.7,14.71C4.08,14.08,3,14.52,3,15.41L3,20C3,20.55,3.45,21,4,21L8.59,21C9.48,21,9.93,19.92,9.3,19.29L7.71,17.7 17.71,7.7 19.3,9.29C19.92,9.92,21,9.48,21,8.59z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="旋转">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M24,24z M0,0z M18.65,8.35L15.86,11.14C15.54,11.46,15.76,12,16.21,12L18,12C18,15.31 15.31,18 12,18 11.21,18 10.44,17.85 9.75,17.56 9.39,17.41 8.98,17.52 8.71,17.79 8.2,18.3 8.38,19.16 9.05,19.43 9.96,19.8 10.96,20 12,20 16.42,20 20,16.42 20,12L21.79,12C22.24,12,22.46,11.46,22.14,11.15L19.35,8.36C19.16,8.16,18.84,8.16,18.65,8.35z M6,12C6,8.69 8.69,6 12,6 12.79,6 13.56,6.15 14.25,6.44 14.61,6.59 15.02,6.48 15.29,6.21 15.8,5.7 15.62,4.84 14.95,4.57 14.04,4.2 13.04,4 12,4 7.58,4 4,7.58 4,12L2.21,12C1.76,12,1.54,12.54,1.86,12.85L4.65,15.64C4.85,15.84,5.16,15.84,5.36,15.64L8.15,12.85C8.46,12.54,8.24,12,7.79,12L6,12z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="通知">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V1024 H1024 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M1024,1024z M0,0z M847,733.1L769.5,578.3C768.7,576.6,768.2,574.8,768.2,572.9L768,401.5C767.9,304.8,702.4,223.4,613.5,199.1L613.5,199C613.5,143.4 568.4,98.3 512.8,98.3 457.3,98.3 412.3,143.2 412.1,198.7 322.2,222.6 255.9,304.6 256,402L256.2,573.4C256.2,575.3,255.8,577.1,254.9,578.8L177.5,733.4C154.9,778.6,187.8,831.9,238.4,831.8L786.3,831.4C836.8,831.5,869.7,778.3,847,733.1z M421.5,860.8C411.4,860.8 405.9,872.5 412.2,880.4 435.6,909.6 471.6,928.3 511.9,928.3 552.3,928.3 588.3,909.6 611.8,880.3 618.1,872.4 612.6,860.7 602.5,860.8L421.5,860.8z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="可视">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V1024 H1024 V0 H0 Z">
+                    <DrawingGroup.Transform>
+                        <TranslateTransform X="0.00012612342834472656" Y="0" />
+                    </DrawingGroup.Transform>
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M1024,1024z M0,0z M512.002844,170.666667C746.7264,170.666667,945.609955,394.638223,1012.681956,479.715556A51.683556,51.683556,0,0,1,1012.681956,544.284444C945.609956,629.361778 746.7264,853.333333 512.002844,853.333333 277.279288,853.333333 78.395733,629.361778 11.323733,544.284444A51.683556,51.683556,0,0,1,11.323733,479.715556C78.395733,394.638222,277.279289,170.666667,512.002844,170.666667z M512.002844,354.474667C449.880177,354.474667 393.873066,392.846223 370.121956,451.726222 346.3424,510.606222 359.483734,578.332444 403.401956,623.388444A150.755556,150.755556,0,0,0,570.769067,657.521778C628.169956,633.173333 665.602844,575.715556 665.602844,512 665.602844,424.988444 596.852622,354.474667 512.031289,354.474667z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="主页">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M24,24z M0,0z M10,19L10,14 14,14 14,19C14,19.55,14.45,20,15,20L18,20C18.55,20,19,19.55,19,19L19,12 20.7,12C21.16,12,21.38,11.43,21.03,11.13L12.67,3.6C12.29,3.26,11.71,3.26,11.33,3.6L2.97,11.13C2.63,11.43,2.84,12,3.3,12L5,12 5,19C5,19.55,5.45,20,6,20L9,20C9.55,20,10,19.55,10,19z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="返回">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M24,24z M0,0z M8,6.82L8,17.18C8,17.97,8.87,18.45,9.54,18.02L17.68,12.84C18.3,12.45,18.3,11.55,17.68,11.15L9.54,5.98C8.87,5.55,8,6.03,8,6.82z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="多任务">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource PrimaryForeground}" Geometry="F1 M24,24z M0,0z M4,15L20,15C20.55,15 21,14.55 21,14 21,13.45 20.55,13 20,13L4,13C3.45,13 3,13.45 3,14 3,14.55 3.45,15 4,15z M4,19L20,19C20.55,19 21,18.55 21,18 21,17.45 20.55,17 20,17L4,17C3.45,17 3,17.45 3,18 3,18.55 3.45,19 4,19z M4,11L20,11C20.55,11 21,10.55 21,10 21,9.45 20.55,9 20,9L4,9C3.45,9 3,9.45 3,10 3,10.55 3.45,11 4,11z M3,6C3,6.55,3.45,7,4,7L20,7C20.55,7 21,6.55 21,6 21,5.45 20.55,5 20,5L4,5C3.45,5,3,5.45,3,6z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+    </Window.Resources>
+
+       <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="34"/>
+                </Grid.ColumnDefinitions>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="34"/>
+                    </Grid.RowDefinitions>
+            <Grid x:Name="maingrid" Grid.Row="0">
+                <WindowsFormsHost 
+                x:Name="WindowsFormsHost1" 
+                Background="Gray"
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch"/>
+            </Grid>
+            <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Tag="{StaticResource 多任务}" Click="Button_Click_4" ToolTip="多任务" Grid.Column="0" Style="{DynamicResource ScrcpyButtonStyle}" Margin="2"/>
+                        <Button Tag="{StaticResource 主页}" Click="Button_Click_5" ToolTip="主页" Grid.Column="1" Style="{DynamicResource ScrcpyButtonStyle}" Margin="2"/>
+                        <Button Tag="{StaticResource 返回}" Click="Button_Click_6" ToolTip="返回" Grid.Column="2" Style="{DynamicResource ScrcpyButtonStyle}" Margin="2"/>
+
+
+                    </Grid>
+                </Grid>
+                <!--菜单-->
+                <ScrollViewer Grid.Column="1">
+                    <StackPanel>
+                        <Button Tag="{StaticResource 电源}" ToolTip="电源" Style="{DynamicResource ScrcpyButtonStyle}" Margin="2" Click="Button_Click_10"/>
+                        <Button Tag="{StaticResource 音量+}" ToolTip="音量+" Style="{DynamicResource ScrcpyButtonStyle}" Margin="2" Click="Button_Click_2"/>
+                        <Button Tag="{StaticResource 音量-}" ToolTip="音量-" Style="{DynamicResource ScrcpyButtonStyle}" Margin="2" Click="Button_Click_3"/>
+                        <Button Tag="{StaticResource 设置}" ToolTip="设置" Style="{DynamicResource ScrcpyButtonStyle}" Margin="2" Visibility="Collapsed"/>
+                        <Button Tag="{StaticResource 自适应}" ToolTip="自适应" Style="{DynamicResource ScrcpyButtonStyle}" Margin="2" Click="Button_Click_1"/>
+                        <Button Tag="{StaticResource 旋转}" ToolTip="旋转" Style="{DynamicResource ScrcpyButtonStyle}" Margin="2" Click="Button_Click_7"/>
+                        <Button Tag="{StaticResource 通知}" ToolTip="通知" Style="{DynamicResource ScrcpyButtonStyle}" Margin="2" Click="Button_Click_8"/>
+                <Button Tag="{StaticResource 可视}" ToolTip="可视" Style="{DynamicResource ScrcpyButtonStyle}" Margin="2" Click="Button_Click_9" Visibility="Collapsed"/>
+
+            </StackPanel>
+                </ScrollViewer>
+                
+            </Grid>
+
+</Window>

@@ -1,0 +1,78 @@
+﻿<Window x:Class="搞机助手Ex.Windows.Windows_Process_Management"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:搞机助手Ex.Windows"
+        mc:Ignorable="d" Focusable="False"
+        ResizeMode="NoResize" 
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        TextOptions.TextHintingMode="Fixed"
+        UseLayoutRounding="True"
+        Loaded="Window_Loaded"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" Height="600" Width="485">
+    <Border x:Name="AllBorder" CornerRadius="8" MouseDown="TitleBar_MouseDown" Background="{DynamicResource WindowBackground}" ClipToBounds="True" BorderBrush="#1E444444" BorderThickness="2">
+        <Grid x:Name="MainGrid" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <ScaleTransform/>
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="31"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- 标题栏 -->
+            <Grid Height="31"  Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBlock x:Name="textblock_title" Grid.Column="1" Text="进程管理" Foreground="{DynamicResource PrimaryForeground}" VerticalAlignment="Center" Margin="5,0,0,0" FontSize="14" HorizontalAlignment="Left"/>
+
+                </StackPanel>
+                <Button Grid.Column="2"
+        Width="25" Height="25" Margin="0,0,3,0"
+        Click="Themes_Click"
+        Background="{DynamicResource SecondaryBackground}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        Style="{DynamicResource ControlButtonStyle}">
+                    <Canvas Width="20" Height="20">
+                        <!-- 调色板图形：主体 -->
+                        <Path Fill="{DynamicResource PrimaryForeground}"
+              Data="M10,1 A9,9 0 1,1 1,10 C1,14 6,14 6,10 A4,4 0 1,0 10,1 Z"/>
+                        <!-- 色块孔位：简化表现，模拟多色调 -->
+                        <Ellipse Width="2.2" Height="2.2" Canvas.Left="6" Canvas.Top="5" Fill="{DynamicResource HighlightBrush}"/>
+                        <Ellipse Width="2.2" Height="2.2" Canvas.Left="12" Canvas.Top="5" Fill="{DynamicResource SuccessBrush}"/>
+                        <Ellipse Width="2.2" Height="2.2" Canvas.Left="13" Canvas.Top="10" Fill="{DynamicResource InfoBrush}"/>
+                        <Ellipse Width="2.2" Height="2.2" Canvas.Left="9" Canvas.Top="13" Fill="{DynamicResource WarningBrush}"/>
+                    </Canvas>
+                </Button>
+
+                <Button Grid.Column="3" Width="25" Height="25" Margin="0,0,3,0" Click="MinimizeButton_Click" Background="#FFD700" Tag="#FFEC8B" BorderBrush="#DAA520" Style="{DynamicResource ControlButtonStyle}">
+                    <Canvas>
+                        <Line X1="6" Y1="10" X2="14" Y2="10" Stroke="Black" StrokeThickness="2"/>
+                    </Canvas>
+                </Button>
+
+                <Button Grid.Column="4" Width="25" Height="25" Margin="0,0,3,0" Click="Button_Click" Background="#E57373" Tag="#EF9A9A" BorderBrush="#D32F2F" Style="{DynamicResource ControlButtonStyle}">
+                    <Canvas>
+                        <Line X1="6" Y1="6" X2="14" Y2="14" Stroke="Black" StrokeThickness="2"/>
+                        <Line X1="14" Y1="6" X2="6" Y2="14" Stroke="Black" StrokeThickness="2"/>
+                    </Canvas>
+                </Button>
+
+            </Grid>
+            <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <WrapPanel x:Name="Stackpanel_进程列表" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+                </WrapPanel>
+            </ScrollViewer>
+        </Grid>
+    </Border>
+</Window>

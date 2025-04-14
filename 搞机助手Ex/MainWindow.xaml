@@ -279,8 +279,8 @@ Stroke="White" StrokeThickness="0.4" Fill="Transparent">
                         <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
                     <!--商标版权许可-->
-                    <TextBlock Grid.Row="1" TextWrapping="Wrap" Margin="10,0,10,0" FontSize="12" Foreground="{DynamicResource DisabledForeground}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="STCaiyun">
-                        免费软件 
+                    <TextBlock Grid.Row="1" TextWrapping="Wrap" Margin="10,0,10,0" FontSize="12" Foreground="{DynamicResource DisabledForeground}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Arial Narrow">
+                        BUG反馈群：756014603
                     </TextBlock>
 
                 </Grid>

@@ -298,7 +298,7 @@ namespace 搞机助手Ex.Views
                 if (_isSharing && _gnirehtetProcess != null && !_gnirehtetProcess.HasExited)
                 {
                     // 如果正在共享网络，则停止共享
-                    StopSharing(button);
+                    _ = StopSharing(button);
                 }
                 else
                 {
@@ -525,6 +525,31 @@ namespace 搞机助手Ex.Views
         {
             Windows_Freeze_App freeze_App = new Windows_Freeze_App();
             freeze_App.Show();
+        }
+
+        private void ModernIconButton_Click_4(object sender, RoutedEventArgs e)
+        {
+            //进程管理
+            MessageBox.Show("别急，老铁");
+        }
+
+        private void ModernIconButton_Click_5(object sender, RoutedEventArgs e)
+        {
+            //性能监控
+            MessageBox.Show("别急，老铁");
+        }
+
+        private void ModernIconButton_Click_6(object sender, RoutedEventArgs e)
+        {
+            //虚拟桌面
+            Windows_Freeze_App windows_Freeze_App = new Windows_Freeze_App(1);
+            windows_Freeze_App.Show();
+        }
+
+        private void ModernIconButton_Click_7(object sender, RoutedEventArgs e)
+        {
+            Windows_Scrcpy windows_Scrcpy = new Windows_Scrcpy();
+            windows_Scrcpy.Show();
         }
     }
 }

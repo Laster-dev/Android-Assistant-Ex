@@ -97,7 +97,9 @@ namespace 搞机助手Ex.Helper
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    StandardOutputEncoding = Encoding.UTF8,  // Set UTF-8 encoding
+                    StandardErrorEncoding = Encoding.UTF8    // Set UTF-8 encoding
                 };
 
                 using (var process = new Process { StartInfo = startInfo })
@@ -372,12 +374,12 @@ namespace 搞机助手Ex.Helper
         //冻结应用
         public async Task<CommandResult> FreezeAppAsync(string packageName, CancellationToken cancellationToken = default)
         {
-            return await ExecuteShellCommandAsync($"pm disable-user --user 0 {packageName}", true, cancellationToken);
+            return await ExecuteShellCommandAsync($"pm disable-user --user 0 {packageName}", false, cancellationToken);
         }
         //解冻应用
         public async Task<CommandResult> UnfreezeAppAsync(string packageName, CancellationToken cancellationToken = default)
         {
-            return await ExecuteShellCommandAsync($"pm enable --user 0 {packageName}", true, cancellationToken);
+            return await ExecuteShellCommandAsync($"pm enable --user 0 {packageName}", false, cancellationToken);
         }
         #endregion
 
@@ -469,6 +471,7 @@ namespace 搞机助手Ex.Helper
 
             return (-1, -1, -1); // Return -1 for all values to indicate failure
         }
+
 
         #endregion
 

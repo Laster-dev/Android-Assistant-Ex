@@ -40,12 +40,17 @@
   <PropertyGroup>
     <ApplicationIcon>RUNOOB-SVG-IMAGE.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -58,6 +63,7 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -72,6 +78,8 @@
     <Compile Include="Helper\FastbootClient.cs" />
     <Compile Include="Helper\InitializationService.cs" />
     <Compile Include="Helper\PackageInfoQuery.cs" />
+    <Compile Include="Helper\ScrcpyHelper.cs" />
+    <Compile Include="Helper\WindowHelper.cs" />
     <Compile Include="MyControl\APPInfoButton.xaml.cs">
       <DependentUpon>APPInfoButton.xaml</DependentUpon>
     </Compile>
@@ -101,6 +109,12 @@
     </Compile>
     <Compile Include="Windows\Windows_Freeze_App.xaml.cs">
       <DependentUpon>Windows_Freeze_App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Windows_Process_Management.xaml.cs">
+      <DependentUpon>Windows_Process_Management.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Windows_Scrcpy.xaml.cs">
+      <DependentUpon>Windows_Scrcpy.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -154,6 +168,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\Windows_Process_Management.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Windows_Scrcpy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -168,6 +190,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

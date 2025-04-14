@@ -25,6 +25,8 @@ namespace 搞机助手Ex.Helper
             get { return fastbootPath; }
             set
             {
+                //获取前一天的日期
+                DateTime yesterday = DateTime.Now.AddDays(-1);
                 if (File.Exists(value)) fastbootPath = value;
                 else fastbootPath = "\"" + fastbootPath + "\"";
             }
@@ -76,7 +78,9 @@ namespace 搞机助手Ex.Helper
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    StandardOutputEncoding = Encoding.UTF8,  // Set UTF-8 encoding
+                    StandardErrorEncoding = Encoding.UTF8    // Set UTF-8 encoding
                 };
 
                 using (var process = new Process { StartInfo = startInfo })

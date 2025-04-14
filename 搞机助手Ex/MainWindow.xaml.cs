@@ -33,7 +33,6 @@ namespace 搞机助手Ex
         private FastbootMode fastbootModePage = new FastbootMode();
         private Expansion expansionPage = new Expansion();
 
-
         public MainWindow()
         {
             InitializeComponent();
@@ -58,7 +57,7 @@ namespace 搞机助手Ex
         { btnSystemMode, systemModePage },
         { btnRecoveryMode, recoveryModePage },
         { btnBootMode, fastbootModePage },
-        { btnExtendedFunc, expansionPage }
+        { btnExtendedFunc, expansionPage },
     };
 
             // 为每个导航按钮注册统一的事件处理逻辑

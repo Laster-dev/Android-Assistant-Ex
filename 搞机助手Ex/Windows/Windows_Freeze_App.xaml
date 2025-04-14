@@ -5,13 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:搞机助手Ex.Windows" xmlns:mycontrol="clr-namespace:搞机助手Ex.MyControl"
         mc:Ignorable="d" Focusable="False"
-         ResizeMode="NoResize" 
-         TextOptions.TextFormattingMode="Display"
-         TextOptions.TextRenderingMode="ClearType"
-         TextOptions.TextHintingMode="Fixed"
-         UseLayoutRounding="True"
-        Loaded="Window_Loaded"
-         WindowStyle="None" AllowsTransparency="True" Background="Transparent" Height="600" Width="400">
+        ResizeMode="NoResize" 
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        TextOptions.TextHintingMode="Fixed"
+        UseLayoutRounding="True"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" Height="600" Width="385">
     <Border x:Name="AllBorder" CornerRadius="8" MouseDown="TitleBar_MouseDown" Background="{DynamicResource WindowBackground}" ClipToBounds="True" BorderBrush="#1E444444" BorderThickness="2">
         <Grid x:Name="MainGrid" RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
@@ -74,9 +73,9 @@
                     <RowDefinition Height="AUTO"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
-                    <Button Content="隐藏未知应用" Click="Button_Click_1" Style="{StaticResource LinkButton}" FontSize="16" Margin="10"/>
-                    <Button Content="显示未知应用" Click="Button_Click_2" Style="{StaticResource LinkButton}" FontSize="16" Margin="10"/>
+                <StackPanel x:Name="冻结Panel" Visibility="Collapsed" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
+                    <Button Content="隐藏未知应用" Click="Button_Click_1" Style="{DynamicResource LinkButton}" FontSize="16" Margin="10"/>
+                    <Button Content="显示未知应用" Click="Button_Click_2" Style="{DynamicResource LinkButton}" FontSize="16" Margin="10"/>
 
                 </StackPanel>
                 <TabControl Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
